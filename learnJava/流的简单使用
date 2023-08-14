@@ -1,0 +1,46 @@
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Stream {
+
+    public static void main(String[] args) {
+
+//        创建一个流 统计 hello 的数量
+//         java.util.stream.Stream<String> stream = java.util.stream.Stream.of("hello",
+//                "hello world","thanks","hello chen","good bye");
+//        long count = stream.filter(w -> w.contains("hello")).count();
+//        System.out.println(count);
+
+//        无限流
+        java.util.stream.Stream<BigInteger> stream = java.util.stream.Stream.iterate(BigInteger.ZERO,
+                n -> n.add(BigInteger.ONE));
+//        iterate 第一个参数是种子 ， 第二个参数是 在种子上调用f产生的值，在前一个值上调用f，等。
+        List<BigInteger> firstElements = stream.limit(200).collect(Collectors.toList());//限制大小为200
+        System.out.println(firstElements);
+
+//        flatMap函数
+        List<String> words = new ArrayList<>();
+        words.add("hello world");
+        java.util.stream.Stream<String> result = words.stream().flatMap(Stream::letters);
+        words.add("Java");
+        java.util.stream.Stream<String> result2 =  words.stream().flatMap(Stream::letters);
+
+//        concat 函数 将两个流合并
+        java.util.stream.Stream<String> combined = java.util.stream.Stream.concat(result,result2);
+        System.out.println(combined.collect(Collectors.toList()));
+
+//[h, e, l, l, o,  , w, o, r, l, d, J, a, v, a, h, e, l, l, o,  , w, o, r, l, d, J, a, v, a]
+//        流在用的时候才会执行，所以两个流都是相同的
+        
+    }
+    public static java.util.stream.Stream<String> letters(String str){
+        List<String> result = new ArrayList<>();
+        for(int i=0; i<str.length(); i++){
+            result.add(str.substring(i,i+1));
+        }
+        return result.stream();
+    }
+
+}
